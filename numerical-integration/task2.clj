@@ -25,9 +25,9 @@
 
            (println "F1(x) = int_{0}^{x} t^2 dt:")
            (time (println "\nF1(10000) ≈" (F1 10000.0)))
-           (dotimes [_ 10] (time (println "\nCached F1(10000) ≈" (F1 10000.0))))
+           (dotimes [n 11] (time (println "\nCached F1("(* n 1000)") ≈" (F1 (* n 1000)))))
 
            (println "\n\nF2(x) = int_{0}^{x} sin(t) dt:")
            (time (println "\nF2(pi) ≈" (F2 Math/PI)))
-           (dotimes [_ 10] (time (println "\nCached F2(pi) ≈" (F2 Math/PI))))))
+           (dotimes [n 11] (time (println "\nCached F2("(* n (/ Math/PI 2))") ≈" (F2 (* n (/ Math/PI 2))))))))
 (-main)
