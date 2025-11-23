@@ -1,4 +1,5 @@
-(ns basic-operations-on-data-structures.task3)
+(ns mpm.basiс_operations_on_data_structures.task3
+    (:gen-class))
 
 (defn my-map
       "Manipulates a collection of one type and transforms it into a slice of another type"

@@ -1,4 +1,5 @@
-(ns basic-operations-on-data-structures.task2)
+(ns mpm.basiс_operations_on_data_structures.task2
+    (:gen-class))
 
 (defn permutations-tail [alphabet n]
       (cond

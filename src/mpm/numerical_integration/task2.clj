@@ -1,4 +1,5 @@
-(ns numerical-integration.task2)
+(ns mpm.numerical_integration.task2
+    (:gen-class))
 
 (defn partial-sums-trapezoid
       [f h]

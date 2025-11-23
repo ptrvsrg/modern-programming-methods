@@ -1,4 +1,5 @@
-(ns numerical-integration.task1)
+(ns mpm.numerical_integration.task1
+    (:gen-class))
 
 (defn trapezoid-integral
       "Returns `F(x) ≈ int_{0}^{x} f(t)dt` using the trapezoidal method with step h."

@@ -1,4 +1,5 @@
-(ns basic-operations-on-data-structures.task4)
+(ns mpm.basiс_operations_on_data_structures.task4
+    (:gen-class))
 
 (defn extend-one
       [alphabet s]
