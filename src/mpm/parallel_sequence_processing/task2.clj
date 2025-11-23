@@ -1,10 +1,10 @@
 (ns mpm.parallel_sequence_processing.task2
     (:gen-class))
 
-(defn lazy-partition [size coll]
+(defn lazy-partition-by-size [size coll]
       (lazy-seq
         (when-let [block (seq (take size coll))]
-                  (cons block (lazy-partition size (drop size coll))))))
+                  (cons block (lazy-partition-by-size size (drop size coll))))))
 
 (defn lazy-parallel-filter
       ([pred coll n-block]
@@ -13,7 +13,7 @@
       ([pred coll n-block parallelism]
        (let [process-block (fn [block]
                                (future (doall (filter pred block))))
-             chunks (lazy-partition n-block coll)]
+             chunks (lazy-partition-by-size n-block coll)]
             (letfn [(fill-buffer [futs chs]
                                  (loop [f futs, c chs]
                                        (if (and (< (count f) parallelism) (seq c))

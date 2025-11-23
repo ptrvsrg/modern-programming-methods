@@ -2,7 +2,7 @@
     (:gen-class))
 
 (defn partition-by-size [coll size]
-      (lazy-seq
+      (seq
         (when (seq coll)
               (cons (take size coll)
                     (partition-by-size (drop size coll) size)))))
