@@ -25,7 +25,7 @@
             F2 (trapezoid-integral f2 h)]
 
            (println "F1(x) = int_{0}^{x} t^2 dt:")
-           (time (println "\nF1(10000) ≈" (F1 10000.0)))
+           (time (println "\nF1(10000) ≈" (F1 10000)))
            (dotimes [n 11] (time (println "\nCached F1("(* n 1000)") ≈" (F1 (* n 1000)))))
 
            (println "\n\nF2(x) = int_{0}^{x} sin(t) dt:")
