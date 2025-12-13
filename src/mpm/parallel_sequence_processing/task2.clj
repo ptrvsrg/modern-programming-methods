@@ -12,21 +12,23 @@
             (lazy-parallel-filter pred coll n-block parallelism)))
       ([pred coll n-block parallelism]
        (let [process-block (fn [block]
-                               (future (doall (filter pred block))))
-             chunks (lazy-partition-by-size n-block coll)]
-            (letfn [(fill-buffer [futs chs]
-                                 (loop [f futs, c chs]
-                                       (if (and (< (count f) parallelism) (seq c))
-                                         (recur (conj f (process-block (first c))) (rest c))
-                                         [f c])))
-                    (produce [chunks futs]
-                             (lazy-seq
-                               (let [[new-futs new-chunks] (fill-buffer futs chunks)]
-                                    (when (seq new-futs)
-                                          (let [first-result @(first new-futs)]
-                                               (concat first-result
-                                                       (produce new-chunks (subvec new-futs 1))))))))]
-                   (produce chunks [])))))
+                               (future (doall (filter pred block))))]
+            (letfn [
+                    (drain-futures [futs-vec acc]
+                                   (if (seq futs-vec)
+                                     (let [first-result @(first futs-vec)]
+                                          (recur (subvec futs-vec 1)
+                                                 (lazy-cat acc first-result)))
+                                     acc))
+                    (parallel-process [chunks-seq]
+                                      (lazy-seq
+                                        (let [block-batch (take parallelism chunks-seq)
+                                              remaining (drop parallelism chunks-seq)]
+                                             (when (seq block-batch)
+                                                   (let [futures-batch (mapv process-block block-batch)
+                                                         results (drain-futures futures-batch (lazy-seq []))]
+                                                        (lazy-cat results (parallel-process remaining)))))))]
+                   (parallel-process (lazy-partition-by-size n-block coll))))))
 
 (defn busy-pred [x]
       (let [limit 10000]
@@ -36,21 +38,21 @@
                    (odd? acc)))))
 
 (defn -main []
-      (let [data (range 0 100000)
+      (let [data (range)
             pred busy-pred
             cores (.availableProcessors (Runtime/getRuntime))
-            n-block (quot (count data) cores)]
+            n-block 10000]
 
            (println "Cores:" cores ", block size:" n-block)
 
            (println "SEQUENTIAL...")
            (time
-             (let [res (doall (filter pred data))]
+             (let [res (take 100000 (filter pred data))]
                   (println "Count:" (count res))))
 
            (println "LAZY PARALLEL...")
            (time
-             (let [res (doall (lazy-parallel-filter pred data n-block cores))]
+             (let [res (take 100000 (lazy-parallel-filter pred data n-block cores))]
                   (println "Count:" (count res))))
 
            (shutdown-agents)))
