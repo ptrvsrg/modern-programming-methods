@@ -47,7 +47,7 @@
 
            (println "SEQUENTIAL...")
            (time
-             (let [res (take 100000 (filter pred data))]
+             (let [res (filter pred (take 100000 data))]
                   (println "Count:" (count res))))
 
            (println "LAZY PARALLEL...")
